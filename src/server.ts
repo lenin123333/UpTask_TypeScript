@@ -6,7 +6,7 @@ import projectRoutes from './routes/projectRoutes'
 dotenv.config()
 connectDB()
 const app = express()
-
+app.use(express.json())
 //routes
 app.use('/api/projects',projectRoutes);
 
