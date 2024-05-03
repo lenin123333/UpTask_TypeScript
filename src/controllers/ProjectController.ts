@@ -37,7 +37,41 @@ export class ProjectController {
             console.log(error)
         }
     }
+   
+    static updateProject = async (req: Request, res: Response) => {
+        const {id} =req.params
+        try {
+            const project = await Project.findByIdAndUpdate(
+                id,req.body
+            )
+            if(!project){
+                const error= new Error('Proyecto no encotrado')
+                return res.status(404).json({
+                    error:error.message  
+                })
+            }
+            await project.save()
+            res.json("Proyecto Actialziado")
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-    
+    static deleteProjet = async (req: Request, res: Response) => {
+        const {id} =req.params
+        try {
+            const project= await Project.findById(id)
+            if(!project){
+                const error= new Error('Proyecto no encotrado')
+                return res.status(404).json({
+                    error:error.message  
+                })
+            }
+            await project.deleteOne()
+            res.send("Proyecto Eliminado")
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
 }
