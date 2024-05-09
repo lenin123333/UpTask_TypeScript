@@ -39,9 +39,9 @@ router.delete('/:id',
     handleInputErrors,
     ProjectController.deleteProjet)
 //routes task
-
+//Cada que encuentre la variable projectId se ejecutara la funcion de validar
+router.param('projectId', validateProjectExist)
 router.post('/:projectId/tasks',
-    validateProjectExist,
     body('name')
         .notEmpty().withMessage("El nombre de la tarea es Obligatorio"),
     body('description')
@@ -50,11 +50,27 @@ router.post('/:projectId/tasks',
     TaskController.createTask)
 
 router.get('/:projectId/tasks',
-    validateProjectExist,
     TaskController.getProjectTasks
 )
 router.get('/:projectId/tasks/:taskId',
-    validateProjectExist,
+    param('taskId').isMongoId().withMessage('ID no válido'),
+    handleInputErrors,
     TaskController.getTaskById
+)
+
+router.put('/:projectId/tasks/:taskId',
+    param('taskId').isMongoId().withMessage('ID no válido'),
+    body('name')
+        .notEmpty().withMessage("El nombre de la tarea es Obligatorio"),
+    body('description')
+        .notEmpty().withMessage("La descripcion de la tarea es Obligatorio"),
+    handleInputErrors,
+    TaskController.updateTask
+)
+
+router.delete('/:projectId/tasks/:taskId',
+    param('taskId').isMongoId().withMessage('ID no válido'),
+    handleInputErrors,
+    TaskController.deleteTask
 )
 export default router
