@@ -19,6 +19,7 @@ router.post('/',
 
 router.get('/', ProjectController.getAllProjects)
 
+
 router.get('/:id',
     param('id').isMongoId().withMessage('ID no válido'),
     handleInputErrors,
