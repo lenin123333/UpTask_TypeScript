@@ -32,21 +32,7 @@ export class TaskController {
 
     static getTaskById = async (req: Request, res: Response) => {
         try {
-            const { taskId } = req.params
-            const task = await Task.findById(taskId)
-            if (!task) {
-                const error = new Error('Tarea no encotrado')
-                return res.status(404).json({
-                    error: error.message
-                })
-            }
-            if (task.project.toString() !== req.project.id) {
-                const error = new Error('Acción no valida')
-                return res.status(400).json({
-                    error: error.message
-                })
-            }
-            res.json(task)
+            res.json(req.task)
         } catch (error) {
 
             res.status(500).json({ error: "Hubo un error" })
@@ -55,20 +41,11 @@ export class TaskController {
 
     static updateTask = async (req: Request, res: Response) => {
         try {
-            const { taskId } = req.params
-            const task = await Task.findByIdAndUpdate(taskId, req.body)
-            if (!task) {
-                const error = new Error('Tarea no encotrado')
-                return res.status(404).json({
-                    error: error.message
-                })
-            }
-            if (task.project.toString() !== req.project.id) {
-                const error = new Error('Acción no valida')
-                return res.status(400).json({
-                    error: error.message
-                })
-            }
+          
+            
+            req.task.name=req.body.name;
+            req.task.description=req.body.descripcion
+            await req.task.save()
             res.send("Tarea Actualizada Correctamente")
         } catch (error) {
 
@@ -78,28 +55,26 @@ export class TaskController {
 
     static deleteTask = async (req: Request, res: Response) => {
         try {
-            const { taskId } = req.params
-            const task = await Task.findById(taskId)
-            if (!task) {
-                const error = new Error('Tarea no encotrado')
-                return res.status(404).json({
-                    error: error.message
-                })
-            }
-            if (task.project.toString() !== req.project.id) {
-                const error = new Error('Acción no valida')
-                return res.status(400).json({
-                    error: error.message
-                })
-            }
-            req.project.tasks = req.project.tasks.filter(task => task.toString() !== taskId)
+           
+            
+            req.project.tasks = req.project.tasks.filter(task => task.toString() !== req.task.id.toString)
             await Promise.allSettled([
-                task.deleteOne(),
+                req.task.deleteOne(),
                 req.project.save()
             ])
             res.send("Tarea Eliminada Correctamente")
         } catch (error) {
 
+            res.status(500).json({ error: "Hubo un error" })
+        } 
+    }
+    static updateStatus = async (req: Request, res: Response) => {
+        try {
+            const {status} = req.body
+            req.task.status=status
+            await req.task.save()
+            res.send("Tarea Actualizada")
+        } catch (error) {
             res.status(500).json({ error: "Hubo un error" })
         }
     }

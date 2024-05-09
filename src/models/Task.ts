@@ -14,7 +14,7 @@ export interface ITask extends Document {
     name: string
     description: string
     project: Types.ObjectId,
-    staus:TaskStauts
+    status:TaskStauts
 }
 
 export const TaskSchema: Schema = new Schema({
@@ -32,7 +32,7 @@ export const TaskSchema: Schema = new Schema({
         type: Types.ObjectId,
         ref: 'Project'
     },
-    staus:{
+    status:{
         type:String,
         enum:Object.values(taskStatus),
         default:taskStatus.PENDING
